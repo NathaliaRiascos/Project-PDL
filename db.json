@@ -1,7 +1,7 @@
 {
      "cliente": [
           { 
-               "id": 123456789, 
+               "cedula": 123456789, 
                "nombre": "Juan pérez", 
                "email": "correo@correo.com",
                "direccion": "cll 112 26K 120",

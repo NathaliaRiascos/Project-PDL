@@ -12,7 +12,9 @@
     "next": "^9.5.3",
     "react": "16.13.1",
     "react-dom": "16.13.1",
-    "sass": "^1.26.11"
+    "sass": "^1.26.11",
+    "sweetalert2": "^10.10.1",
+    "uuid": "^8.3.1"
   },
   "scripts": {
     "dev": "electron index.js",

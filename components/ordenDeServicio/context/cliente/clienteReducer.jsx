@@ -1,6 +1,7 @@
 import React from 'react'
-import {
-     AGREGAR_CLIENTE
+import {AGREGAR_CLIENTE,
+     OBTENER_CLIENTES,
+     BUSCAR_CLIENTE
      } from '../../types'
 
 export default (state, action) => {
@@ -9,7 +10,18 @@ export default (state, action) => {
                return{
                     ...state,
                     clientes: [...state.clientes, action.payload],
-                     
+                    formulario: false           
+               }
+          case OBTENER_CLIENTES:
+               return{
+                    ...state,
+                    clientes: action.payload
+               }
+          case BUSCAR_CLIENTE:
+               return{
+                    ...state,
+                    cliente: state.clientes.filter(cliente => cliente.id === action.payload)
+                                    
                }
           default:
                return state;

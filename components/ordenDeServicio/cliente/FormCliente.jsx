@@ -1,44 +1,79 @@
-import React, {useContext, useState} from 'react'
+import React, {useContext, useState, useEffect,useMemo, useCallback} from 'react'
 import {Input, AutoComplete} from 'antd'
 import clienteContext from '../context/cliente/clienteContext'
+import clienteState from '../context/cliente/clienteState';
 
 
 const FormCliente = () => {
 
      //Extrae datos del context de cliente
      const clientesContext = useContext(clienteContext);
-     const{agregarCliente} = clientesContext;
+     const{clientes, obtenerClientes, } = clientesContext;
      
-
+     
      //State del formulario
-     const [cliente, guardarCliente] = useState({
+     const [datoscliente, guardarCliente] = useState({
           id: '', 
-          nombre: '', 
+          nombre: '',
           email: '',
           direccion: '',
           telefono: ''
      })
 
      //Destrucutring de cliente
-     const{id,nombre,email,direccion,telefono} = cliente;
+     const{id, nombre, email,direccion,telefono} = datoscliente;
 
      //Valores del formulario
-     const onChange = e => {
-
+     
+     /*useEffect(() => {
+          if(id !== '' && nombre !== '' ){
+               agregarCliente(datoscliente);
+               //console.log(clientes)
+          }
+     });
+     */
+     useEffect(() => {
+          if(id !== '' && nombre !== '' && email !== '' && direccion !== '' && telefono !== '' ){
+               agregarCliente(datoscliente);
+               console.log(clientes)
+          }
+    })
+    
+     const onChange = e => {  
+                    
           guardarCliente({
-               ...cliente,
+               ...datoscliente,
                [e.target.name] : e.target.value
           })
      }
+     
+     const onName = value => {
+          guardarCliente({
+               ...datoscliente,
+               nombre: value
+          })
+     }
 
-     const onSubmit = e => {          
-          e.preventDefault();
-          agregarCliente(cliente);
-          console.log(cliente);         
+     const onId = value => {
+          guardarCliente({
+               ...datoscliente,
+               id: value
+          })
      }
      
-    
-
+     /*
+     const validar = e => {
+          e.preventDefault();
+          
+           if(id !== '' && nombre !== '' && email !== '' && direccion !== '' && telefono !== '' ){
+               agregarCliente(datoscliente);
+               console.log(clientes)
+          }
+          
+     }
+     */
+  
+   
      return ( 
           <>
                <div className="clientForm">
@@ -46,26 +81,23 @@ const FormCliente = () => {
                          <p>Cliente</p>
                     </div>
                     <form 
-                         onSubmit={onSubmit}
+                       //onSubmit={validar}
                     >
                     <Input.Group compact>
-                         <Input
-                              type="text"
+                         <AutoComplete
                               style={{ width: '195px', margin: '0 2% 2% 0' }}
                               placeholder="Nombre"
-                              name="nombre"
-                              value={nombre}
-                              onChange={onChange}
+                              onChange={onName}
+                              
+                              
                               options={[{ value: 'text 1' }, { value: 'text 2' }]}
                          />
                          
-                         <Input
-                         type="number"
+                         <AutoComplete
                               style={{ width: '195px', margin: '0 0 2% 0' }}
                               placeholder="Identificación"
-                              name="id"
-                              value={id}
-                              onChange={onChange}
+                              onChange={onId}
+                              
                               options={[{ value: 'text 1' }, { value: 'text 2' }]}
                          /> 
                          <Input

@@ -1,12 +1,15 @@
 import React, {useReducer} from 'react'
+
 import clienteReducer from './clienteReducer'
 import clienteContext from './clienteContext'
 import {
-     AGREGAR_CLIENTE 
+     AGREGAR_CLIENTE,
+     OBTENER_CLIENTES,
+     BUSCAR_CLIENTE 
 }from '../../types'
 
 const ClienteState = props => {
-     const clientes = [ 
+     const clientes = [
           { 
                id: 123456789, 
                nombre: 'Juan pérez', 
@@ -15,22 +18,38 @@ const ClienteState = props => {
                telefono: '4235676' 
           }
      ]
-
      const initialState = {
           clientes: [],
-          errorformulario: false
+          errorformulario: false,
+          cliente: null
      }
 
-     //Dispath para ejecurtar las acciones
+     //Dispath para ejecutar las acciones
      const [state, dispatch] = useReducer(clienteReducer, initialState)
 
      //Agregar, obtener y mostrar clientes
      const agregarCliente = cliente => {
-
+          
           //Insertar cliente al state
           dispatch({
                type: AGREGAR_CLIENTE,
                payload: cliente 
+          })
+     }
+
+     //Obtener los clientes
+     const obtenerClientes = ()  => {
+          dispatch({
+               type: OBTENER_CLIENTES,
+               payload: clientes
+          })
+     }
+
+     const buscarCliente = date => {
+          //Busca cliente por nombre y id
+          dispatch({
+               type: BUSCAR_CLIENTE,
+               payload: date
           })
      }
     
@@ -38,7 +57,11 @@ const ClienteState = props => {
           <clienteContext.Provider
                value={{
                     clientes: state.clientes,
-                    agregarCliente
+                    errorformulario: state.errorformulario,
+                    cliente: state.cliente,
+                    agregarCliente,
+                    obtenerClientes,
+                    buscarCliente
                }}
           >
                {props.children}
