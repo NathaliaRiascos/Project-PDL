@@ -42,7 +42,7 @@ const ListaEmpleado = () => {
      const data = [];
      if(manodeobra !== null){
           manodeobra.forEach(mano => {        
-                    data.push({cedula: mano.cedula, nombre:  mano.nombre, pago: mano.pago})                  
+                    data.push({key: mano.cedula, cedula: mano.cedula, nombre:  mano.nombre, pago: mano.pago})                  
           })   
      }
      

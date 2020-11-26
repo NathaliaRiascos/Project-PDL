@@ -5,12 +5,12 @@ import {AGREGAR_CLIENTE,
      } from '../../types'
 
 export default (state, action) => {
-     switch(action.type){
+     switch(action.type){ 
           case AGREGAR_CLIENTE:
                return{
                     ...state,
-                    clientes: [...state.clientes, action.payload],
-                    formulario: false           
+                    clientes: [...state.clientes, action.payload],  
+                    cliente: action.payload       
                }
           case OBTENER_CLIENTES:
                return{

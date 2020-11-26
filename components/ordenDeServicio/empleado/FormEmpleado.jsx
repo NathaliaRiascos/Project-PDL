@@ -3,16 +3,17 @@ import { Input, AutoComplete,Button } from 'antd';
 import Swal from 'sweetalert2';
 import {PlusOutlined} from '@ant-design/icons';
 import empleadoContext from '../context/empleado/empleadoContext'
-import clienteContext from '../context/cliente/clienteContext'
 import ListaEmpleado from './ListaEmpleado';
 
-const FormEmpleado = memo(() => {
+const FormEmpleado = () => {
 
      //Extrae datos del context de empleado
+
      const empleadosContext = useContext(empleadoContext);
      const{empleados, empleado,empleadoseleccionado, manodeobra, agregarEmpleado, buscarEmpleadoId, buscarEmpleadoNombre, agregarManoObra} = empleadosContext;
 
      //Optiones para mostrar en inputs
+
      const cedulas = [];
      empleados.forEach(empleado => {        
           cedulas.push({value: empleado.cedula})                  
@@ -25,6 +26,7 @@ const FormEmpleado = memo(() => {
      
      
      //Guarda los nuevos empleados
+
      const[datosempleado, guardarEmpleado] = useState({
           cedula: 0, 
           nombre: '', 
@@ -38,11 +40,14 @@ const FormEmpleado = memo(() => {
      })
 
      //Destructuring
+
      const{cedula, nombre, pago} = datosempleado;
 
      const{cedula_, nombre_, pago_} = resultadoBusqueda;
 
+
      //Evalua si los input estan vacios
+
      const mostrarMensaje = () => {
           Swal.fire({
                icon: 'error',
@@ -51,6 +56,7 @@ const FormEmpleado = memo(() => {
      } 
 
      // Para mostrar el mensaje pequeño
+
      const Toast = Swal.mixin({
           toast: true,
           position: 'top-end',
@@ -65,7 +71,6 @@ const FormEmpleado = memo(() => {
         
         
      const errorInput = (value, texto) => {
-          //value.target.className = 'error'
           Toast.fire({
                icon: 'error',
                title: texto
@@ -86,7 +91,7 @@ const FormEmpleado = memo(() => {
             }
   
           if(isNumber){
-               errorInput(e,'El nombre no puede tener numeros');
+               errorInput(valor,'El nombre no puede tener numeros');
                return;
           }
 
@@ -128,6 +133,7 @@ const FormEmpleado = memo(() => {
      }
 
      //Validaciones
+
      const existeRetorno = () => {
           if(empleado !== null){
                if(empleado[0]  !== undefined){                  
@@ -166,22 +172,15 @@ const FormEmpleado = memo(() => {
      }
      
      //console.log(existeRetorno(), haySeleccion(),resultadoBusqueda);
-     
-     
+ 
      const hayResultado = () =>{
           if(cedula_ !== 0 || nombre_ !== ''|| pago_ !== 0 ){
                return true;
           }else{
                return false;
           }
-     }
-     
+     } 
 
-     const setInputName = () => {
-          if(hayResultado){
-               return name_;
-          }
-     }
      //Validación general 
 
      const onSubmit = e => {
@@ -190,16 +189,17 @@ const FormEmpleado = memo(() => {
           
           //Si los campos estan vacios parará la ejecución
           if(cedula === 0 || nombre === ''|| pago === 0 ){  
-               if(cedula_ === 0 || nombre_ === ''|| pago_ === 0 ){             
+               //if(cedula_ === 0 || nombre_ === ''|| pago_ === 0 ){             
                     mostrarMensaje();
                     return;
-               }
+               //}
           }
          
          
          let existe = false;
 
          //Comprobar existencia del empleado
+         /*
          if(existeRetorno() === true){
               //Comprobar existencia en mano de obra
                manodeobra.find(e => {
@@ -214,7 +214,7 @@ const FormEmpleado = memo(() => {
                }
                
          }else{
-
+          */
                //Comprobar existencia en mano de obra
                manodeobra.find(e => {
                     if(e.cedula === cedula){
@@ -227,12 +227,11 @@ const FormEmpleado = memo(() => {
                     agregarEmpleado(datosempleado);
                }
         
-         }
+         //}
            
      }
     
-     //console.log(resultadoBusqueda);
-
+     
      return ( 
           <>
                <div className="titleLine">
@@ -248,7 +247,7 @@ const FormEmpleado = memo(() => {
                               placeholder="Cedula"
                               //value={(hayResultado())? cedula_:cedula}
                               onChange={onId}
-                              options={cedulas}
+                              //options={cedulas}
                               />
 
                               <AutoComplete
@@ -258,7 +257,7 @@ const FormEmpleado = memo(() => {
                               //value={e => {(hayResultado)? nombre_: e}}
                               //value={(hayResultado())? nombre_ : nombre}
                               onChange={onName}                           
-                              options={nombres}   
+                              //options={nombres}   
                               />
 
                               <Input
@@ -283,6 +282,6 @@ const FormEmpleado = memo(() => {
                
           </>
      );
-})
+}
  
 export default FormEmpleado;

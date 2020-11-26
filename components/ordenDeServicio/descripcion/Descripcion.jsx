@@ -1,22 +1,31 @@
-import React,{useState,useContext} from 'react';
+import React,{useState,useContext, useEffect} from 'react';
 import { Input } from 'antd';
 
 const { TextArea } = Input;
 
-const Descripcion = () => {
+const Descripcion = ({boton,activarBoton,setDescription}) => {
 
-     const[description, setDescription] = useState('');
-     console.log(description);
+     const[description, guardarDescription] = useState('');
+     //console.log(description);
+
+     useEffect(() => {
+          
+          if(boton === true){
+               setDescription(description)
+              //console.log(typeof(description), description)
+          }
+     })
 
      const onChange = e => {
-          setDescription(e.target.value);
+          guardarDescription(e.target.value);
+          activarBoton(false);
      }
      return (  
           <>
                 <div className="titleLine">
                     <p>Descripcion</p>
                 </div>
-                <TextArea showCount autoSize={false} style={{width:'400px', height: '200px'}}
+                <TextArea  autoSize={false} style={{width:'400px', height: '200px'}}
                 onChange={onChange}
                 />
               

@@ -12,9 +12,7 @@ import {
 const otrosgastosState = props => {
      
      const initialState = {
-          otrosgastos: [
-               {id: '', descripcion: '', precio: 0}
-          ],
+          otrosgastos: [],
           listagastos: []
      }
 

@@ -28,7 +28,7 @@ const ListaGastos = () => {
      const data = [];
       if(otrosgastos !== null){
           otrosgastos.forEach(otros => {        
-                    data.push({id: otros.id, descripcion: otros.descripcion, precio: otros.precio})                  
+                    data.push({key: otros.id, id: otros.id, descripcion: otros.descripcion, precio: otros.precio})                  
           })   
      }
 

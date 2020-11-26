@@ -40,7 +40,7 @@ const ListaMateriales = () => {
       const data = [];
       if(materialesenuso !== null){
           materialesenuso.forEach(uso => {        
-                    data.push({ref: uso.ref, material:  uso.material, unitPrice: uso.unitPrice, cant: uso.cantidad, total: uso.total})                  
+                    data.push({key: uso.material, ref: uso.ref, material:  uso.material, unitPrice: uso.unitPrice, cant: uso.cantidad, total: uso.total})                  
           })   
      }
      

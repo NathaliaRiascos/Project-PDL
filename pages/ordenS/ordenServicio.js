@@ -1,4 +1,4 @@
-import react, {useContext} from 'react'
+import react, {useContext, useState} from 'react'
 import styles from '../../styles/Home.module.css'
 import FormCliente from '../../components/ordenDeServicio/cliente/FormCliente'
 import FormEmpleado from '../../components/ordenDeServicio/empleado/FormEmpleado'
@@ -17,7 +17,12 @@ import  OtrosgastosState from '../../components/ordenDeServicio/context/otrosgas
 
 function OrdenServicio() {
 
+  const[boton, activarBoton]= useState(false)
+  const[description, setDescription] = useState('');
+  const[total, setTotal] = useState(0)
+  const[fecha, setFecha] = useState()
 
+  //console.log(description);
   return (
     <>
       <div>
@@ -30,12 +35,17 @@ function OrdenServicio() {
               Orden de servicio 
             </h1>
             <div className="pequeno_cont">
-              <Fecha />
+              <Fecha 
+                setFecha={setFecha}
+              />
             </div>        
           </div>
         <div className="container"> 
           <div className="cliente ">               
-              <FormCliente />            
+              <FormCliente 
+                boton={boton}
+                activarBoton={activarBoton}
+              />            
           </div>
           <div className="empleado titleMargin">            
               <FormEmpleado/>            
@@ -44,17 +54,30 @@ function OrdenServicio() {
               <FormMateriales />            
           </div>
           <div className="descripcion titleMargin">
-            <Descripcion />
+            <Descripcion
+              boton={boton}
+              activarBoton={activarBoton}
+              setDescription={setDescription}
+            />
           </div>
           <div className=" gastos titleMargin">           
               <FormGatos />            
           </div>
           <div className="pequeno_cont titleMargin">
-            <Total />
+            <Total
+                total={total}
+                setTotal={setTotal}
+             />
           </div>
           
         </div>
-            <BtnAgregar />
+            <BtnAgregar 
+                fecha={fecha}
+                total={total}
+                boton={boton}
+                activarBoton={activarBoton}
+                description={description}
+            />
               </OtrosgastosState>
             </MaterialState>
           </EmpleadoState>
