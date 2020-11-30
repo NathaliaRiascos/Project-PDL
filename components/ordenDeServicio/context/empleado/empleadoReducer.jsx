@@ -28,6 +28,7 @@ export default (state, action) => {
                return{
                     ...state,
                     empleado: state.empleados.filter(empleado => empleado.cedula === action.payload),
+                    
                     empleadoseleccionado: null
                    
                }

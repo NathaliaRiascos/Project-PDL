@@ -1,8 +1,6 @@
 import React from 'react';
 import { DatePicker, Space,ConfigProvider} from 'antd';
-import moment from 'moment';
-//import 'moment/locale/es-es';
-//import locale from 'antd/es/date-picker/locale/es_ES';
+import locale from 'antd/lib/locale/es_ES';
 
 const FechaEntrega = ({setFecha}) => {
      return ( 
@@ -12,11 +10,11 @@ const FechaEntrega = ({setFecha}) => {
                </div>
                <div className="fondo">
                <Space direction="vertical">
-               <ConfigProvider /*locale={locale}*/>
-                    <DatePicker  
+               <ConfigProvider locale={locale} >
+                    <DatePicker  locale={locale}
                          placeholder="Selecciona una fecha"
                          style={{width: '200px'}}
-                         onChange={e => setFecha(e.value)}
+                         onChange={e => console.log(e._d)}
                          />  
                     </ConfigProvider >             
                </Space>

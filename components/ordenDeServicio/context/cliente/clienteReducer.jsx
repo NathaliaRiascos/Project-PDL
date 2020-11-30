@@ -1,7 +1,8 @@
 import React from 'react'
 import {AGREGAR_CLIENTE,
      OBTENER_CLIENTES,
-     BUSCAR_CLIENTE
+     BUSCAR_CLIENTE_ID,
+     BUSCAR_CLIENTE_NOMBRE 
      } from '../../types'
 
 export default (state, action) => {
@@ -17,11 +18,15 @@ export default (state, action) => {
                     ...state,
                     clientes: action.payload
                }
-          case BUSCAR_CLIENTE:
+          case BUSCAR_CLIENTE_ID:
                return{
                     ...state,
-                    cliente: state.clientes.filter(cliente => cliente.id === action.payload)
-                                    
+                    cliente: state.clientes.filter(cliente => cliente.id === action.payload)                                  
+               }
+          case BUSCAR_CLIENTE_NOMBRE:
+               return{
+                    ...state,
+                    cliente: state.clientes.filter(cliente => cliente.nombre === action.payload) 
                }
           default:
                return state;

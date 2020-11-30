@@ -5,7 +5,8 @@ import clienteContext from './clienteContext'
 import {
      AGREGAR_CLIENTE,
      OBTENER_CLIENTES,
-     BUSCAR_CLIENTE 
+     BUSCAR_CLIENTE_ID,
+     BUSCAR_CLIENTE_NOMBRE  
 }from '../../types'
 
 const ClienteState = props => {
@@ -42,14 +43,21 @@ const ClienteState = props => {
           })
      }
 
-     const buscarCliente = date => {
-          //Busca cliente por nombre y id
+     //Busca cliente por id
+     const buscarClienteId = id => {
+          
           dispatch({
-               type: BUSCAR_CLIENTE,
-               payload: date
+               type: BUSCAR_CLIENTE_ID,
+               payload: id
           })
      }
     
+     const buscarClienteNombre = nombre => {
+          dispatch({
+               type: BUSCAR_CLIENTE_NOMBRE,
+               payload: nombre
+          })
+     }
      return(
           <clienteContext.Provider
                value={{
@@ -58,7 +66,8 @@ const ClienteState = props => {
                     cliente: state.cliente,
                     agregarCliente,
                     obtenerClientes,
-                    buscarCliente
+                    buscarClienteId,
+                    buscarClienteNombre
                }}
           >
                {props.children}

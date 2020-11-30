@@ -1,4 +1,4 @@
-import React, {useContext, useState, useEffect, memo} from 'react'
+import React, {useContext, useState, useRef, useEffect} from 'react'
 import { Input, AutoComplete,Button } from 'antd';
 import Swal from 'sweetalert2';
 import {PlusOutlined} from '@ant-design/icons';
@@ -10,7 +10,7 @@ const FormEmpleado = () => {
      //Extrae datos del context de empleado
 
      const empleadosContext = useContext(empleadoContext);
-     const{empleados, empleado,empleadoseleccionado, manodeobra, agregarEmpleado, buscarEmpleadoId, buscarEmpleadoNombre, agregarManoObra} = empleadosContext;
+     const{empleados,empleado,empleadoseleccionado, manodeobra, agregarEmpleado, buscarEmpleadoId, buscarEmpleadoNombre, agregarManoObra} = empleadosContext;
 
      //Optiones para mostrar en inputs
 
@@ -151,19 +151,49 @@ const FormEmpleado = () => {
                return false;
           }
      }
-   
-     const cambiarValores = () => {
-          if(existeRetorno()){
-              guardarResultado({
+
+     /*
+      guardarEmpleado({
+                    ...datosempleado,
+                    nombre: empleado[0].nombre,
+                    cedula: empleado[0].cedula,
+                    pago: empleado[0].pago
+               })
+
+               guardarEmpleado({
+                    ...datosempleado,
+                    nombre: empleadoseleccionado.nombre,
+                    cedula: empleadoseleccionado.cedula,
+                    pago: empleadoseleccionado.pago
+               })
+
+     guardarResultado({
                    ...resultadoBusqueda,
                    nombre_: empleado[0].nombre,
                    cedula_: empleado[0].cedula,
                    pago_: empleado[0].pago
               })
+
+              guardarResultado({
+                    ...resultadoBusqueda,
+                    nombre_: empleadoseleccionado.nombre,
+                    cedula_: empleadoseleccionado.cedula,
+                    pago_: empleadoseleccionado.pago
+               })
+     */
+   
+     const cambiarValores = () => {
+          if(existeRetorno()){
+               guardarResultado({
+                    ...resultadoBusqueda,
+                    nombre_: empleado[0].nombre,
+                    cedula_: empleado[0].cedula,
+                    pago_: empleado[0].pago
+               })
           }
           if(haySeleccion()){
                guardarResultado({
-                    ...resultadoBusqueda,
+                   ...resultadoBusqueda,
                     nombre_: empleadoseleccionado.nombre,
                     cedula_: empleadoseleccionado.cedula,
                     pago_: empleadoseleccionado.pago
@@ -174,12 +204,21 @@ const FormEmpleado = () => {
      //console.log(existeRetorno(), haySeleccion(),resultadoBusqueda);
  
      const hayResultado = () =>{
-          if(cedula_ !== 0 || nombre_ !== ''|| pago_ !== 0 ){
+          if(existeRetorno() || haySeleccion()){
                return true;
           }else{
-               return false;
+               return false
           }
+          /*if(cedula_ !== 0 || nombre_ !== ''|| pago_ !== 0 ){
+               
+               return true;
+               
+          }else{
+               return false;
+          }*/
      } 
+
+
 
      //Validación general 
 
@@ -189,17 +228,17 @@ const FormEmpleado = () => {
           
           //Si los campos estan vacios parará la ejecución
           if(cedula === 0 || nombre === ''|| pago === 0 ){  
-               //if(cedula_ === 0 || nombre_ === ''|| pago_ === 0 ){             
+               if(cedula_ === 0 || nombre_ === ''|| pago_ === 0 ){             
                     mostrarMensaje();
                     return;
-               //}
+               }
           }
          
          
          let existe = false;
 
          //Comprobar existencia del empleado
-         /*
+         
          if(existeRetorno() === true){
               //Comprobar existencia en mano de obra
                manodeobra.find(e => {
@@ -214,7 +253,7 @@ const FormEmpleado = () => {
                }
                
          }else{
-          */
+          
                //Comprobar existencia en mano de obra
                manodeobra.find(e => {
                     if(e.cedula === cedula){
@@ -227,13 +266,42 @@ const FormEmpleado = () => {
                     agregarEmpleado(datosempleado);
                }
         
-         //}
+               guardarEmpleado({
+                    ...datosempleado,
+                    nombre: '',
+                    cedula: 0,
+                    pago: 0
+               })
+          }
            
      }
-    
+     
+     const inputRef = useRef();
+    // const onClick = () => {
+         /*
+          const input = inputRef.current;
+
+          if(hayResultado){
+               inputRef.current = nombre_;
+          }else{
+               inputRef.current = nombre;
+          }*/
+         /* input.select();
+          document.execCommand('copy');*/
+          
+    // }
+     
+     
+     useEffect(() => {
+          cambiarValores()
+          console.log(empleado);
+          console.log(resultadoBusqueda);
+          console.log(hayResultado());
+     },[empleado, empleadoseleccionado])
      
      return ( 
           <>
+               
                <div className="titleLine">
                     <p>Empleados</p>
                 </div>
@@ -241,33 +309,46 @@ const FormEmpleado = () => {
                      <form>
                          <Input.Group 
                               style={{display: 'flex'}}>
-
+                              
                               <AutoComplete
+                              
                               style={{ width: '140px', margin: '0 2% 2% 0' }}
                               placeholder="Cedula"
-                              //value={(hayResultado())? cedula_:cedula}
-                              onChange={onId}
-                              //options={cedulas}
+                              value={(hayResultado())? cedula_:cedula}
+                              onChange={e=> {
+                                   onId(e);
+                                   
+                                  // cambiarValores();
+                              }}
+                         
+                              options={cedulas}
+                              allowClear={true}
                               />
 
                               <AutoComplete
-                              //value={(hayResultado)? resultadoBusqueda.nombre_ : nombre}
+                             
+                              //value={inputRef.current}
+                              value={(hayResultado())? nombre_: nombre}
                               style={{ width: '195px', margin: '0 2% 2% 0' }}
                               placeholder="Nombre"
                               //value={e => {(hayResultado)? nombre_: e}}
                               //value={(hayResultado())? nombre_ : nombre}
-                              onChange={onName}                           
+                              onChange={e => {
+                                   onName(e);
+                                   
+                              }}  
+                              allowClear={true}                         
                               //options={nombres}   
                               />
 
                               <Input
-                              
+                              value={(hayResultado())? pago_: pago}
                               style={{ width: '190px', margin: '0 5% 2% 0' }}
                               placeholder="Pago"
-                              
+                              id="pago"
                               name="pago"
-                              //value={(hayResultado)? pago_ : pago}
                               onChange={onPago}
+                              allowClear={true} 
                               />
                               
                               <Button type="primary" shape="circle" icon={<PlusOutlined /

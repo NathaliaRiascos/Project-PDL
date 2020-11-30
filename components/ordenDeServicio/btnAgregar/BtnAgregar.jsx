@@ -6,10 +6,8 @@ import empleadoContext from '../context/empleado/empleadoContext'
 import clienteContext from '../context/cliente/clienteContext'
 import otrosgastosContext from '../context/otrosgastos/otrosgastosContext'
 
-import ListaServicios from '../ListaServicios'
 
 const btnAgregar = ({fecha, boton,activarBoton, description,total}) => {
-
      
      //Extrae datos del context de empleado
      const empleadosContext = useContext(empleadoContext);
@@ -28,9 +26,11 @@ const btnAgregar = ({fecha, boton,activarBoton, description,total}) => {
      const{otrosgastos} = OtrosgastosContext;
 
      const[activo,modificar] = useState(false);
+
+     //Aquí estará toda la información de ordenes de servicio
      const lista = [];
     
-     //console.log(fecha);
+     
      useEffect(() => {
           
           if(activo === true && cliente !== null ){
@@ -40,19 +40,14 @@ const btnAgregar = ({fecha, boton,activarBoton, description,total}) => {
                });
                console.log(lista);               
           }
+          //console.log(fecha);
           //activarBoton(false);
-     },[activo,manodeobra,materialesenuso,cliente,description,otrosgastos,total])
+     },[activo,manodeobra,materialesenuso,cliente,description,otrosgastos,total,fecha])
      
-     //, manodeobra,materialesenuso,cliente,description,otrosgastos,total
-
      
-
      const onClick =  () =>{
           activarBoton(true);
-          modificar(true);
-         /* if(description !== ''){
-               
-          }*/
+          modificar(true);  
      }
      
 

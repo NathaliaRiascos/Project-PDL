@@ -1,4 +1,4 @@
-import React, {useContext, useState, useEffect,memo, useMemo} from 'react'
+import React, {useContext, useState, useEffect,useRef} from 'react'
 import {Input, AutoComplete, Tooltip} from 'antd'
 import Swal from 'sweetalert2';
 import clienteContext from '../context/cliente/clienteContext'
@@ -9,7 +9,7 @@ const FormCliente = ({boton, activarBoton}) => {
 
      //Extrae datos del context de cliente
      const clientesContext = useContext(clienteContext);
-     const{ agregarCliente} = clientesContext;
+     const{cliente,agregarCliente, buscarClienteNombre, buscarClienteId} = clientesContext;
      
      
      //State del formulario
@@ -21,19 +21,32 @@ const FormCliente = ({boton, activarBoton}) => {
           telefono: 0
      })
 
+     const[resultadoBusqueda, guardarResultado] = useState({
+          id: 0, 
+          nombre: '',
+          email: '',
+          direccion: '',
+          telefono: 0
+     })
+
      const [clase, setClase] = useState(false);
 
-     //Destrucutring de cliente
+     //Destructuring de cliente
      const{id, nombre, email,direccion,telefono} = datoscliente;
     
+     //Destructuring de busqueda
+     const{id_, nombre_, email_,direccion_,telefono_} = resultadoBusqueda;
 
      useEffect(() => {
           if(boton === true){
                //validar();
-               if(id !== 0 && nombre !== '' && email !== '' && direccion !== '' && telefono !== 0 ){
-               agregarCliente(datoscliente);
-               
-          }
+              // if(id !== 0 && nombre !== '' && email !== '' && direccion !== '' && telefono !== 0 ){
+                   // if(id_ !== 0 && nombre_ !== '' && email_ !== '' && direccion_ !== '' && telefono_ !== 0 ){
+                        // cambiarValores()  
+                       //  console.log('si coge')             
+                         agregarCliente(datoscliente);
+                   // }
+          //}
           
                activarBoton(false);
           }
@@ -73,6 +86,7 @@ const FormCliente = ({boton, activarBoton}) => {
      
      const onName = value => {      
            
+          buscarClienteNombre(value);
           guardarCliente({
                ...datoscliente,
                nombre: value
@@ -87,13 +101,36 @@ const FormCliente = ({boton, activarBoton}) => {
                errorInput(e,'Solo campos numericos');
                return;
           }
-
+          buscarClienteId(valor);
           guardarCliente({
                ...datoscliente,
                id: valor
           })
      }
-    
+
+     const existeRetorno = () => {
+          if(cliente !== null){
+               if(cliente[0]  !== undefined){                  
+                    return true;
+               }else{
+                    return false;
+               }              
+          }              
+     }
+
+     const cambiarValores = () => {
+          if(existeRetorno()){
+               guardarResultado({
+                    ...resultadoBusqueda,
+                    id_: cliente[0].id, 
+                    nombre_: cliente[0].nombre,
+                    email_: cliente[0].email,
+                    direccion_: cliente[0].direccion,
+                    telefono_:cliente[0].telefono
+               })
+          }
+     }
+    //console.log(cliente);
      /* CODIGO PARA COMPAR EL LABEL
     const onFocus = e =>{     
      
@@ -124,9 +161,17 @@ const FormCliente = ({boton, activarBoton}) => {
       <label className={clase? 'active': 'no_active'}>Teléfono</label>
       <label className={clase? 'active': 'no_active'}>Correo electronico</label>  
     */
+    /*
+    const inputRef = useRef();
+    const onFocus = e => {
+          const input = inputRef.current;
+          input.focus();
 
+          console.log(input.value)
+    }
+    */
 
- 
+  
      return ( 
           <>
                <div className="clientForm">
@@ -136,6 +181,8 @@ const FormCliente = ({boton, activarBoton}) => {
                     <Input.Group compact>
                                        
                          <AutoComplete
+                              //value={(existeRetorno)? nombre_: nombre}
+                              value={nombre}
                               style={{ width: '195px', margin: '0 2% 2% 0' }}                            placeholder="Nombre"                              
                              /* onFocus={e => onFocus(e)}
                               onBlur={e => onBlur(e)}*/
@@ -148,6 +195,8 @@ const FormCliente = ({boton, activarBoton}) => {
                               placeholder="Cédula"
                               /*onFocus={onFocus}
                               onBlur={onBlur}*/
+                              //value={(existeRetorno)? id_: id}
+                              value={id}
                               onChange={onId}
                               //options={[{ value: 'text 1' }, { value: 'text 2' }]}
                          /> 
@@ -157,6 +206,7 @@ const FormCliente = ({boton, activarBoton}) => {
                               type="text"
                               style={{ width: '195px', margin: '0 2% 2% 0' }}
                               name="direccion"
+                              //value={(existeRetorno)? direccion_: direccion}
                               value={direccion}
                               /*onFocus={onFocus}
                               onBlur={onBlur}*/
@@ -168,6 +218,7 @@ const FormCliente = ({boton, activarBoton}) => {
                          <Input
                               type="number"
                               style={{ width: '195px', margin: '0 0 2% 0' }}
+                              //value={(existeRetorno)? telefono_: telefono}
                               value={telefono}
                               name="telefono"
                              /* onFocus={onFocus}
@@ -180,6 +231,7 @@ const FormCliente = ({boton, activarBoton}) => {
                               type="email"
                               style={{ width: '195px', margin: '0 2% 0 0' }}
                               name="email"
+                              //value={(existeRetorno)? email_: email}
                               value={email}
                               /*onFocus={onFocus}
                               onBlur={onBlur}*/
