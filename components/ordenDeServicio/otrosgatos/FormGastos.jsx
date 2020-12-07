@@ -1,10 +1,11 @@
 import React,{useContext, useState} from 'react';
 import { Input, Button } from 'antd';
 import {PlusOutlined} from '@ant-design/icons';
-import Swal from 'sweetalert2';
+
 
 import otrosgastosContext from '../context/otrosgastos/otrosgastosContext'
 import ListaGastos from './ListaGastos'
+import {notificacion, camposVacios} from './../Notificacion';
 
 const FormGastos = () => {
 
@@ -20,36 +21,7 @@ const FormGastos = () => {
     //Destructuring
     const{descripcion, precio} = gastos;
 
-    //Evalua si los input estan vacios
-    const mostrarMensaje = () => {
-        Swal.fire({
-             icon: 'error',
-             text: 'No pueden quedar campos sin llenar'
-        })
-   } 
 
-   // Para mostrar el mensaje pequeño
-   const Toast = Swal.mixin({
-    toast: true,
-    position: 'top-end',
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-    didOpen: (toast) => {
-      toast.addEventListener('mouseenter', Swal.stopTimer)
-      toast.addEventListener('mouseleave', Swal.resumeTimer)
-    }
-  })
-  
-  
-const errorInput = (value, texto) => {
-    //value.target.className = 'error'
-    Toast.fire({
-         icon: 'error',
-         title: texto
-    })
-
-}
    //Extrae los valores del input y los guarda
     const onChange = e => {
   
@@ -71,8 +43,8 @@ const errorInput = (value, texto) => {
 
         //Si los campos estan vacios parará la ejecución
         if(descripcion === '' || precio === 0){            
-                 mostrarMensaje();
-                 return;
+                camposVacios();
+                return;
             }
 
         let existe = false;

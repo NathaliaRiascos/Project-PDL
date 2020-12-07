@@ -1,6 +1,6 @@
-import React,{useContext, useMemo, useEffect, useState} from 'react'
-import { PrinterOutlined, WarningTwoTone } from '@ant-design/icons';
-import { Button, Tooltip, notification, Modal } from 'antd';
+import React,{useContext,useEffect, useState} from 'react'
+import {PlusOutlined } from '@ant-design/icons';
+import { Button, Tooltip,} from 'antd';
 import materialContext from '../../ordenDeServicio/context/materiales/materialContext';
 import empleadoContext from '../context/empleado/empleadoContext'
 import clienteContext from '../context/cliente/clienteContext'
@@ -35,10 +35,10 @@ const btnAgregar = ({fecha, boton,activarBoton, description,total}) => {
           
           if(activo === true && cliente !== null ){
           //console.log(activo);
-               lista.push({datoscliente: cliente, description: description,
+               lista.push({fechaEntrega: fecha,datoscliente: cliente, description: description,
                empleados: manodeobra, gastos: otrosgastos, gastoTotal: total
                });
-               console.log(lista);               
+                             
           }
           //console.log(fecha);
           //activarBoton(false);
@@ -48,6 +48,7 @@ const btnAgregar = ({fecha, boton,activarBoton, description,total}) => {
      const onClick =  () =>{
           activarBoton(true);
           modificar(true);  
+          console.log(lista); 
      }
      
 
@@ -55,8 +56,7 @@ const btnAgregar = ({fecha, boton,activarBoton, description,total}) => {
           <>
                <Tooltip placement="top" title={"Agregar"}>
                     <Button type="primary"
-                         icon={<PrinterOutlined />}
-                         
+                         icon={<PlusOutlined />}
                          onClick={onClick}
                     >Agregar
                     </Button>

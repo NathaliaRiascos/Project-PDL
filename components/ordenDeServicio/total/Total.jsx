@@ -36,6 +36,7 @@ const Total = ({total,setTotal}) => {
       })
 
       //Hacer suma de todo los pesos pra saber su total
+      
       let suma = 0;
       pagos.forEach(e => {
         suma += e;

@@ -1,18 +1,20 @@
-import React, {useContext, useState, useRef, useEffect} from 'react'
+import React, {useContext, useState, useEffect} from 'react'
 import { Input, AutoComplete,Button } from 'antd';
-import Swal from 'sweetalert2';
+
 import {PlusOutlined} from '@ant-design/icons';
 import empleadoContext from '../context/empleado/empleadoContext'
 import ListaEmpleado from './ListaEmpleado';
+import {notificacion, camposVacios} from './../Notificacion';
 
 const FormEmpleado = () => {
 
-     //Extrae datos del context de empleado
+     //Extrae datos del context de empleado 
 
      const empleadosContext = useContext(empleadoContext);
      const{empleados,empleado,empleadoseleccionado, manodeobra, agregarEmpleado, buscarEmpleadoId, buscarEmpleadoNombre, agregarManoObra} = empleadosContext;
 
-     //Optiones para mostrar en inputs
+
+     //Opciones para mostrar en los inputs 
 
      const cedulas = [];
      empleados.forEach(empleado => {        
@@ -28,60 +30,28 @@ const FormEmpleado = () => {
      //Guarda los nuevos empleados
 
      const[datosempleado, guardarEmpleado] = useState({
-          cedula: 0, 
+          cedula: '', 
           nombre: '', 
-          pago: 0
+          pago: ''
      })
 
      const[resultadoBusqueda, guardarResultado] = useState({
-          cedula_: 0, 
+          cedula_: '', 
           nombre_: '', 
-          pago_: 0
+          pago_: ''
      })
+
 
      //Destructuring
 
      const{cedula, nombre, pago} = datosempleado;
-
      const{cedula_, nombre_, pago_} = resultadoBusqueda;
 
-
-     //Evalua si los input estan vacios
-
-     const mostrarMensaje = () => {
-          Swal.fire({
-               icon: 'error',
-               text: 'No pueden quedar campos sin llenar'
-          })
-     } 
-
-     // Para mostrar el mensaje pequeño
-
-     const Toast = Swal.mixin({
-          toast: true,
-          position: 'top-end',
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.addEventListener('mouseenter', Swal.stopTimer)
-            toast.addEventListener('mouseleave', Swal.resumeTimer)
-          }
-        })
-        
-        
-     const errorInput = (value, texto) => {
-          Toast.fire({
-               icon: 'error',
-               title: texto
-          })
-
-     }
-
-     //Extraen los valores de los inputs
+     //Extraen todos los valores del input
 
      const onName = valor=> {
 
+          //Evalua si el nombre contiene numeros
           let isNumber = false;
           const numeros="0123456789";
           for(let i=0; i<valor.length; i++){
@@ -91,10 +61,11 @@ const FormEmpleado = () => {
             }
   
           if(isNumber){
-               errorInput(valor,'El nombre no puede tener numeros');
+               notificacion('error','El nombre no puede tener numeros')
                return;
           }
 
+          //Si no contiene números guarda los datos
           buscarEmpleadoNombre(valor);
           guardarEmpleado({
                ...datosempleado,
@@ -134,6 +105,7 @@ const FormEmpleado = () => {
 
      //Validaciones
 
+     //Evalua si se encuentra el empleado al hacer la busqueda
      const existeRetorno = () => {
           if(empleado !== null){
                if(empleado[0]  !== undefined){                  
@@ -144,6 +116,7 @@ const FormEmpleado = () => {
           }              
      }
 
+     //Evalua si se selecciono un empleado en la lista
      const haySeleccion = () => {
           if(empleadoseleccionado !== null){             
                return true;
@@ -152,36 +125,9 @@ const FormEmpleado = () => {
           }
      }
 
-     /*
-      guardarEmpleado({
-                    ...datosempleado,
-                    nombre: empleado[0].nombre,
-                    cedula: empleado[0].cedula,
-                    pago: empleado[0].pago
-               })
+     //Si alguna de las validaciones anteriores da true 
+     //guarda los datos en resultado
 
-               guardarEmpleado({
-                    ...datosempleado,
-                    nombre: empleadoseleccionado.nombre,
-                    cedula: empleadoseleccionado.cedula,
-                    pago: empleadoseleccionado.pago
-               })
-
-     guardarResultado({
-                   ...resultadoBusqueda,
-                   nombre_: empleado[0].nombre,
-                   cedula_: empleado[0].cedula,
-                   pago_: empleado[0].pago
-              })
-
-              guardarResultado({
-                    ...resultadoBusqueda,
-                    nombre_: empleadoseleccionado.nombre,
-                    cedula_: empleadoseleccionado.cedula,
-                    pago_: empleadoseleccionado.pago
-               })
-     */
-   
      const cambiarValores = () => {
           if(existeRetorno()){
                guardarResultado({
@@ -201,23 +147,16 @@ const FormEmpleado = () => {
           }
      }
      
-     //console.log(existeRetorno(), haySeleccion(),resultadoBusqueda);
- 
+     //Evalua si hubo una seleccion en la lista 
+     //o si se hizo una respectiva busqueda 
+     //Para cambiar los valores en input
      const hayResultado = () =>{
           if(existeRetorno() || haySeleccion()){
                return true;
           }else{
                return false
-          }
-          /*if(cedula_ !== 0 || nombre_ !== ''|| pago_ !== 0 ){
-               
-               return true;
-               
-          }else{
-               return false;
-          }*/
+          }       
      } 
-
 
 
      //Validación general 
@@ -227,19 +166,19 @@ const FormEmpleado = () => {
           e.preventDefault();
           
           //Si los campos estan vacios parará la ejecución
-          if(cedula === 0 || nombre === ''|| pago === 0 ){  
-               if(cedula_ === 0 || nombre_ === ''|| pago_ === 0 ){             
-                    mostrarMensaje();
+
+          if(cedula === '' || nombre === ''|| pago === '' ){  
+               if(cedula_ === '' || nombre_ === ''|| pago_ === '' ){ 
+                    camposVacios();            
                     return;
                }
           }
          
-         
-         let existe = false;
-
          //Comprobar existencia del empleado
-         
+         let existe = false;
+     
          if(existeRetorno() === true){
+
               //Comprobar existencia en mano de obra
                manodeobra.find(e => {
                     if(e.cedula === empleado[0].cedula){
@@ -266,37 +205,30 @@ const FormEmpleado = () => {
                     agregarEmpleado(datosempleado);
                }
         
+               //Resetea el formulario
                guardarEmpleado({
                     ...datosempleado,
                     nombre: '',
-                    cedula: 0,
-                    pago: 0
+                    cedula: '',
+                    pago: ''
                })
+
+               guardarResultado({
+                    ...resultadoBusqueda,
+                     nombre_:'',
+                     cedula_: '',
+                     pago_: ''
+                })
           }
            
      }
      
-     const inputRef = useRef();
-    // const onClick = () => {
-         /*
-          const input = inputRef.current;
-
-          if(hayResultado){
-               inputRef.current = nombre_;
-          }else{
-               inputRef.current = nombre;
-          }*/
-         /* input.select();
-          document.execCommand('copy');*/
-          
-    // }
-     
      
      useEffect(() => {
           cambiarValores()
-          console.log(empleado);
-          console.log(resultadoBusqueda);
-          console.log(hayResultado());
+          //console.log(empleado);
+          //console.log(resultadoBusqueda);
+         // console.log(hayResultado());
      },[empleado, empleadoseleccionado])
      
      return ( 

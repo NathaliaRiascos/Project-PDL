@@ -1,8 +1,8 @@
 import React, {useContext, useState, useEffect,useRef} from 'react'
 import {Input, AutoComplete, Tooltip} from 'antd'
-import Swal from 'sweetalert2';
+
 import clienteContext from '../context/cliente/clienteContext'
-import clienteState from '../context/cliente/clienteState';
+import {notificacion} from './../Notificacion';
 
 
 const FormCliente = ({boton, activarBoton}) => {
@@ -14,78 +14,56 @@ const FormCliente = ({boton, activarBoton}) => {
      
      //State del formulario
      const [datoscliente, guardarCliente] = useState({
-          id: 0, 
+          id: '', 
           nombre: '',
           email: '',
           direccion: '',
-          telefono: 0
+          telefono: ''
      })
 
      const[resultadoBusqueda, guardarResultado] = useState({
-          id: 0, 
+          id: '', 
           nombre: '',
           email: '',
           direccion: '',
-          telefono: 0
+          telefono: ''
      })
 
      const [clase, setClase] = useState(false);
 
-     //Destructuring de cliente
+     //Destructuring 
+
      const{id, nombre, email,direccion,telefono} = datoscliente;
-    
-     //Destructuring de busqueda
      const{id_, nombre_, email_,direccion_,telefono_} = resultadoBusqueda;
+
+     //Espera que se envie todos los datos de orden de servicio
+     //para agregar los datos del cliente
 
      useEffect(() => {
           if(boton === true){
                //validar();
               // if(id !== 0 && nombre !== '' && email !== '' && direccion !== '' && telefono !== 0 ){
-                   // if(id_ !== 0 && nombre_ !== '' && email_ !== '' && direccion_ !== '' && telefono_ !== 0 ){
+                   // if(id_ !== '' && nombre_ !== ''){
+                    if(id !== '' && nombre !== ''){
                         // cambiarValores()  
                        //  console.log('si coge')             
                          agregarCliente(datoscliente);
-                   // }
+                    }
           //}
           
                activarBoton(false);
           }
      })
 
-     // Para mostrar el mensaje pequeño
-     const Toast = Swal.mixin({
-          toast: true,
-          position: 'top-end',
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.addEventListener('mouseenter', Swal.stopTimer)
-            toast.addEventListener('mouseleave', Swal.resumeTimer)
-          }
-        })
 
-     const errorInput = (value, texto) => {
-
-          Toast.fire({
-               icon: 'error',
-               title: texto
-          })
-
-     }
-
-
-     const onChange = e => {  
-               
-               guardarCliente({
-                    ...datoscliente,
-                    [e.target.name] : e.target.value
-               })  
-                  
+     const onChange = e => {                
+          guardarCliente({
+               ...datoscliente,
+               [e.target.name] : e.target.value
+          })                    
      }
      
-     const onName = value => {      
-           
+     const onName = value => {                
           buscarClienteNombre(value);
           guardarCliente({
                ...datoscliente,
@@ -93,8 +71,7 @@ const FormCliente = ({boton, activarBoton}) => {
           })
      }
 
-     const onId = e => {
-          
+     const onId = e =>  {       
           const valor = Number(e);
           
           if(isNaN(valor)){      
@@ -108,6 +85,7 @@ const FormCliente = ({boton, activarBoton}) => {
           })
      }
 
+     //Evalua si se encuentra el cliente al hacer la busqueda
      const existeRetorno = () => {
           if(cliente !== null){
                if(cliente[0]  !== undefined){                  
@@ -118,6 +96,7 @@ const FormCliente = ({boton, activarBoton}) => {
           }              
      }
 
+     //Si hay una coincidencia llena el resultado
      const cambiarValores = () => {
           if(existeRetorno()){
                guardarResultado({

@@ -71,6 +71,7 @@ function OrdenServicio() {
           </div>
           
         </div>
+            <div className="final">
             <BtnAgregar 
                 fecha={fecha}
                 total={total}
@@ -78,6 +79,7 @@ function OrdenServicio() {
                 activarBoton={activarBoton}
                 description={description}
             />
+            </div>
               </OtrosgastosState>
             </MaterialState>
           </EmpleadoState>

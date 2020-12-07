@@ -3,6 +3,17 @@ import { DatePicker, Space,ConfigProvider} from 'antd';
 import locale from 'antd/lib/locale/es_ES';
 
 const FechaEntrega = ({setFecha}) => {
+
+     const dateFormat = 'DD-MM-YYYY';
+     const onChange = e => {
+
+          const dia = e._d.getUTCDate();
+          const anio = e._d.getFullYear();
+          const mes = e._d.getMonth();
+
+          setFecha(dia+'-'+mes+'-'+anio)
+
+     }
      return ( 
           <>
                <div className="titleLine">
@@ -14,7 +25,8 @@ const FechaEntrega = ({setFecha}) => {
                     <DatePicker  locale={locale}
                          placeholder="Selecciona una fecha"
                          style={{width: '200px'}}
-                         onChange={e => console.log(e._d)}
+                         onChange={onChange}
+                         format={dateFormat}
                          />  
                     </ConfigProvider >             
                </Space>

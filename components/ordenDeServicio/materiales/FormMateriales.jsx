@@ -1,84 +1,75 @@
-import React, {useState,useContext} from 'react'
+import React, {useState,useContext,useEffect} from 'react'
 import { Input, AutoComplete,Button } from 'antd';
 import {PlusOutlined} from '@ant-design/icons';
-import Swal from 'sweetalert2';
+
+import {notificacion, camposVacios} from './../Notificacion';
 import ListaMateriales from './ListaMateriales'
 import materialContext from '../../ordenDeServicio/context/materiales/materialContext';
 
 const FormMateriales = () => {
 
     //Extrae datos del context de materiales
+
     const materialesContext = useContext(materialContext);
     const{materiales,materialesenuso, agregarMaterial, agregarMaterialEnUso} = materialesContext;
 
-    //
+    //Guardara el total 
+
+    const[operacion, guardarOperacion] = useState('')
+
+    //Datos material
+
     const[material_, guardarMaterial] = useState({
         ref: '', 
         material: '', 
-        unitPrice: 0, 
-        cantidad: 0, 
-        total: 0 
+        unitPrice: '', 
+        cantidad: '', 
+        total: ''
     })
 
     //Destructuring
-    const{ref, material,unitPrice,cantidad,total} = material_;
+
+    const{ref, material,unitPrice,cantidad} = material_;
   
+   //Cada vez que se cargue va a calcular el total
+
+    useEffect(() => {
+        if(unitPrice !== 0 && cantidad !== 0){
+            calcularTotal()    
+        }      
+    },)
+     
     
-    // Para mostrar el mensaje pequeño
-    const Toast = Swal.mixin({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        didOpen: (toast) => {
-          toast.addEventListener('mouseenter', Swal.stopTimer)
-          toast.addEventListener('mouseleave', Swal.resumeTimer)
-        }
-      })
-      
-    //Evalua si los input estan vacios
-    const mostrarMensaje = () => {
-        Swal.fire({
-             icon: 'error',
-             text: 'No pueden quedar campos sin llenar'
-        })
-    } 
-      
-    //Se mostrará si se ingresa un valor no permitido
-    const errorInput = (value, texto) => {
-        Toast.fire({
-             icon: 'error',
-             title: texto
-        })
-   }
 
    const existeRetorno = () => {
-    if(materiales !== null){
-         if(materiales[0]  !== undefined){                  
-              return true;
-         }else{
-              return false;
-         }              
-    }              
-}
+        if(materiales !== null){
+            if(materiales[0]  !== undefined){                  
+                return true;
+            }else{
+                return false;
+            }              
+        }              
+    }
 
-   //Guarda el valor de cantidad, unitPrice y total
+    //Guarda el valor de cantidad, unitPrice y total
+
     const onChange = e => {
+        
         const valor = Number(e.target.value);
-          
-          if(isNaN(valor)){      
-               errorInput(e,'Solo campos numericos');
-               return;
-          }
+
+        if(isNaN(valor)){      
+            notificacion('error','Solo campos numericos');
+            return;
+        }
 
         guardarMaterial({
             ...material_,
             [e.target.name] : valor
-        })
+        })      
     }
 
     //Guarda y valida dato de Material
+
     const onMaterial = e => {
         let isNumber = false;
         const numeros="0123456789";
@@ -91,7 +82,7 @@ const FormMateriales = () => {
 
         //Si no es un número mostrará un mensaje y termina ejecución
         if(isNumber){
-            errorInput(e,'El nombre no puede tener numeros');
+            notificacion('error','El nombre no puede tener numeros');
             return;
         }
         //Al pasar la validación se guardara
@@ -107,24 +98,40 @@ const FormMateriales = () => {
             ref : e
         })
     }
+    
+    
+    const calcularTotal = () => {
+        const precio = Number(unitPrice);
+        const cant = Number(cantidad);
+        
+        if(precio === 0 || cant === 0){        
+            return;
+        }  
+          
+        guardarOperacion(cant*precio);
+        
+    }
+    
 
     //Validación general, aqui se guardarán los datos
     const onSubmit = e => {
+        
         e.preventDefault();
 
-         //Si los campos estan vacios parará la ejecución
-         if(ref === '' || material === ''|| unitPrice === 0 
-         || cantidad === 0 || total === 0){  
-            
-                 mostrarMensaje();
-                 return;
-          
+        //Asigna el resultado de la operación al total
+        material_.total = operacion
+        
+        //Si los campos estan vacios parará la ejecución
+        if(ref === '' || material === ''|| unitPrice === '' 
+        || cantidad === '' || material_.total === ''){              
+            camposVacios();
+            return;        
        }
 
-       let existe = false;
+        let existe = false;
        
-       //Comprobar existencia en materialesenuso
-       materialesenuso.find(e => {
+        //Comprobar existencia en materialesenuso
+        materialesenuso.find(e => {
             if(e.material === material){
                 existe = true;
             }
@@ -134,9 +141,19 @@ const FormMateriales = () => {
         if(existe === false){
             agregarMaterial(material_);
         }
+
+        //Formatea el formulario
+        operacion = ''
+        guardarMaterial({
+            ref: '', 
+            material: '', 
+            unitPrice: '', 
+            cantidad: '', 
+            total: ''
+        })
        
     }
-
+    
 
      return (  
           <>
@@ -149,8 +166,7 @@ const FormMateriales = () => {
                     <Input.Group style={{display: 'flex'}}>
                         <AutoComplete
                             style={{ width: '150px', margin: '0 2% 2% 0' }}
-                            placeholder="Referencia"
-                            
+                            placeholder="Referencia"                       
                             onChange={onRef}
                         />
                         <AutoComplete
@@ -174,10 +190,8 @@ const FormMateriales = () => {
                         />
                         <Input
                             style={{ width: '200px', margin: '0 10% 2% 0' }}
-                            name='total'
-                            value={total}
+                            value={operacion}
                             placeholder="Total"
-                            onChange={onChange}
                             
                         />
                         <Button type="primary" shape="circle" icon={<PlusOutlined />} onClick={onSubmit}/>
